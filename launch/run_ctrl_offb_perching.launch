@@ -1,0 +1,15 @@
+<launch>
+
+	<node pkg="my_px4ctrl" type="offbctrl_node" name="my_px4ctrl" output="screen">
+        	<!-- <remap from="~odom" to="/vicon_imu_ekf_odom" /> -->
+			
+			<remap from="~odom" to="/mavros/local_position/odom" />
+
+		<remap from="~cmd" to="/drone0/position_cmd" />
+
+        <rosparam command="load" file="$(find my_px4ctrl)/config/ctrl_param_perching.yaml" />
+	</node>
+	<node pkg="my_px4ctrl" type="keyboard.py" name="keyboard"  />
+	<node pkg="tf" type="static_transform_publisher" name="world_to_map"
+    args="0.0 0.0 0.0 0.0 0.0 0.0 /world /map 40" />
+</launch>
