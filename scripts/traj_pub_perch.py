@@ -5,7 +5,7 @@ Author: xindong324
 Date: 2022-09-19 19:50:43
 LastEditors: xindong324
 LastEditTime: 2022-10-26 19:49:19
-Description: file content
+Description: 飞duration，只控制到框
 '''
 # from asyncio import futures
 import rospy

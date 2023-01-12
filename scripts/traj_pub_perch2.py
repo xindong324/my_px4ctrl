@@ -192,9 +192,9 @@ if __name__ == '__main__':
         if(t < 1e-6):
             continue
         if(t >= 2*duration):
-            flag_em = Bool()
-            flag_em.data = True
-            emergency_pub.publish(flag_em)
+            # flag_em = Bool()
+            # flag_em.data = True
+            # emergency_pub.publish(flag_em)
             break;
         
         if(t >= duration):
@@ -258,7 +258,7 @@ if __name__ == '__main__':
         
         rate.sleep()
 
-    while not rospy.is_shutdown():
-        flag_em = Bool()
-        flag_em.data = True
-        emergency_pub.publish(flag_em);
+    # while not rospy.is_shutdown():
+    #     flag_em = Bool()
+    #     flag_em.data = True
+    #     emergency_pub.publish(flag_em);

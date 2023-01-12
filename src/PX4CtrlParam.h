@@ -95,6 +95,7 @@ public:
     RCReverse rc_reverse;
     ThrustMapping thr_map;
     AutoTakeoffLand takeoff_land;
+    Hover hover;
 
     int pose_solver;
     int attitude_fb;

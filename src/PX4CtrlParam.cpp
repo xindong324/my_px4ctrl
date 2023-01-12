@@ -65,6 +65,11 @@ void Parameter_t::config_from_ros_handle(const ros::NodeHandle &nh)
     read_essential_param(nh, "perform_aerodynamics_compensation", perform_aerodynamics_compensation);
     read_essential_param(nh, "attitude_fb", attitude_fb);
 
+    read_essential_param(nh, "hover/use_hov_percent_kf", hover.use_hov_percent_kf);
+    read_essential_param(nh, "hover/percent_lower_limit", hover.percent_lower_limit);
+    read_essential_param(nh, "hover/percent_higher_limit", hover.percent_higher_limit);
+
+
     read_essential_param(nh, "rc_reverse/roll", rc_reverse.roll);
     read_essential_param(nh, "rc_reverse/pitch", rc_reverse.pitch);
     read_essential_param(nh, "rc_reverse/yaw", rc_reverse.yaw);

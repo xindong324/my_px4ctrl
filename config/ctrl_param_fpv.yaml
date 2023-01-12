@@ -20,7 +20,7 @@ pz_error_max: 0.3
 vz_error_max: 1.0
 yaw_error_max: 0.7
 
-use_yaw_rate_ctrl: false
+use_yaw_rate_ctrl: true
 perform_aerodynamics_compensation: false
 
 
@@ -47,6 +47,12 @@ thrust_model: # The model that maps thrust signal u(0~1) to real thrust force F(
     K3: 0.6786 # Needs precise calibration! K3 equals THR_MDL_FAC in https://docs.px4.io/master/en/config_mc/pid_tuning_guide_multicopter.html.
     # approximate thrust mapping parameters
     hover_percentage: 0.3  # Thrust percentage in Stabilize/Arco mode # *
+
+hover:
+    use_hov_percent_kf: false
+    #hzchzc
+    percent_lower_limit: 0.40
+    percent_higher_limit: 0.77
 
 gain:
     # Cascade PID controller. Recommend to read the code.
