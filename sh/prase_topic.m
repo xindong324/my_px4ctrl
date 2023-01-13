@@ -8,7 +8,7 @@ clc;
 %bag = rosbag('mavros_zed_2021-11-21-13-56-13.bag');
 %bag = rosbag('mavros_2021-12-04-17-16-30.bag');
  %bag = rosbag('mavros_2021-12-13-09-56-14.bag');
- bag = rosbag('2023-01-13-17-10-00.bag');
+ bag = rosbag('2023-01-13-21-03-06.bag');
  
 
 state_select = select(bag, 'Time',[bag.StartTime bag.EndTime], 'Topic', '/mavros/local_position/odom');% {'iiwa_msgs/JointPosition'}
