@@ -5,7 +5,7 @@ Author: xindong324
 Date: 2022-09-19 19:50:43
 LastEditors: xindong324
 LastEditTime: 2022-10-26 19:49:11
-Description: file content
+Description: 飞行2*duration
 '''
 # from asyncio import futures
 import rospy
@@ -27,7 +27,7 @@ last_yaw_ = 0
 last_yaw_dot_ = 0
 time_forward_ = 1.0
 
-duration  = 5
+duration  = 6
 
 gravity_acc = 9.81
 pit_ang_end = -PI/4
@@ -238,7 +238,7 @@ if __name__ == '__main__':
         yaw_temp = math.atan2(traj.velocity.y,traj.velocity.x)
         
         #cur_yaw, cur_yawrate = calculate_yaw(yaw_temp, t, last_t) 
-
+        print("t: ", t,"y: ",pos[1])
         # d_yaw = cur_yaw - last_yaw
         # d_yaw = d_yaw - 2 * PI if d_yaw >= PI else d_yaw
         # d_yaw = d_yaw + 2 * PI if d_yaw <= -PI else d_yaw

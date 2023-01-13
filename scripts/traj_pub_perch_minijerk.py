@@ -162,13 +162,13 @@ if __name__ == '__main__':
 
     traj = PositionCommand()
 
-    min_valx,max_valx = get_minmax(0,duration,coeff_x)
-    min_valy,max_valy = get_minmax(0,duration,coeff_y)
-    min_valz,max_valz = get_minmax(0,duration,coeff_z)
+    # min_valx,max_valx = get_minmax(0,duration,coeff_x)
+    # min_valy,max_valy = get_minmax(0,duration,coeff_y)
+    # min_valz,max_valz = get_minmax(0,duration,coeff_z)
 
-    print("min_x, max_x", min_valx,max_valx)
-    print("min_y, max_y", min_valy,max_valy)
-    print("min_z, max_z", min_valz,max_valz)
+    # print("min_x, max_x", min_valx,max_valx)
+    # print("min_y, max_y", min_valy,max_valy)
+    # print("min_z, max_z", min_valz,max_valz)
 
     if (min_valx < pos_min_constrain[0] or min_valy < pos_min_constrain[1] or min_valz < pos_min_constrain[2] or max_valx > pos_max_constrain[0] or max_valy > pos_max_constrain[1] or max_valz > pos_max_constrain[2]):
         rospy.logwarn("out of bound")
@@ -216,6 +216,8 @@ if __name__ == '__main__':
 
         dx = future_pos[0] - pos[0]
         dy =  future_pos[1] -  pos[1]
+
+        print("t: ", t,"y: ",pos[1])
 
         # yaw_temp = math.atan2(dy,dx)
         yaw_temp = math.atan2(traj.velocity.y,traj.velocity.x)

@@ -59,9 +59,9 @@ gain:
     Kp0: 1.5
     Kp1: 1.6
     Kp2: 1.5
-    Kv0: 5.5
-    Kv1: 5.5
-    Kv2: 2.5
+    Kv0: 1.5
+    Kv1: 1.5
+    Kv2: 2.0
     # ↓↓↓ No use now --
     Kvi0: 0.2
     Kvi1: 0.2
