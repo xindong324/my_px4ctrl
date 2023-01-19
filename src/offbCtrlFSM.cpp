@@ -226,15 +226,7 @@ void OffbCtrlFSM::process()
 
     //cout<<"imu data: " << imu_data_.a(0) << imu_data_.a(1) << imu_data_.a(2) << endl;
     //cout<<"odom data: "<< odom_data_.p(0) << odom_data_.p(1) << odom_data_.p(2) << endl;
-    //step2: estimate thrust model
-    if(state_ == AUTO_HOVER || state_ == CMD_CTRL)
-    {
-        //ROS_INFO("BF_simple update");
-        hov_thr_kf_.simple_update(u.des_v_real, odom_data_.v );
-        //ROS_INFO("aft_simple update");
-        // This line may not take effect according to param.hov.use_hov_percent_kf
-        param_.config_full_thrust(hov_thr_kf_.get_hov_thr());
-    }
+    
 
     
     // step3: solve and update control commands
@@ -265,6 +257,16 @@ void OffbCtrlFSM::process()
         publish_attitude_ctrl(u, now_time);
     }
     
+    //step2: estimate thrust model
+    if(state_ == AUTO_HOVER || state_ == CMD_CTRL)
+    {
+        //ROS_INFO("BF_simple update");
+        hov_thr_kf_.simple_update(u.des_v_real, odom_data_.v );
+        //ROS_INFO("aft_simple update");
+        // This line may not take effect according to param.hov.use_hov_percent_kf
+        param_.config_full_thrust(hov_thr_kf_.get_hov_thr());
+    }
+
     //step5: Detect if the drone has landed
     land_detector(state_, des, odom_data_);
 
@@ -473,6 +475,8 @@ bool OffbCtrlFSM::recv_new_odom()
 void OffbCtrlFSM::publish_bodyrate_ctrl(const Controller_Output_t &u, const ros::Time &stamp)
 {
 	mavros_msgs::AttitudeTarget msg;
+
+    //ROS_INFO("PUB RATE");
 
 	msg.header.stamp = stamp;
 	msg.header.frame_id = std::string("FCU");

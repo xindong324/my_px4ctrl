@@ -209,7 +209,7 @@ Controller::calculateControl(const Desired_State_t &des,
     Eigen::Vector3d z_b_curr = wRb_odom.col(2);
     Eigen::Vector3d F_des = des_acc*param_.mass;
     double u1 = F_des.dot(z_b_curr);
-    double fullparam = 0.7;
+    double fullparam = param_.hover.percent_higher_limit;
     u.thrust = u1 / param_.full_thrust;
     if(u.thrust>=fullparam)
       ROS_WARN("FULL THRUST");
@@ -249,19 +249,19 @@ Controller::calculateControl(const Desired_State_t &des,
   debug_msg_.des_a_y = des_acc(1);
   debug_msg_.des_a_z = des_acc(2);
   
-  debug_msg_.des_q_x = u.q.x();
-  debug_msg_.des_q_y = u.q.y();
-  debug_msg_.des_q_z = u.q.z();
-  debug_msg_.des_q_w = u.q.w();
+  debug_msg_.des_q_x = desired_attitude.x();
+  debug_msg_.des_q_y = desired_attitude.y();
+  debug_msg_.des_q_z = desired_attitude.z();
+  debug_msg_.des_q_w = desired_attitude.w();
   
   debug_msg_.des_thr = u.thrust;
   
-  // Used for thrust-accel mapping estimation
-  timed_thrust_.push(std::pair<ros::Time, double>(ros::Time::now(), u.thrust));
-  while (timed_thrust_.size() > 100)
-  {
-    timed_thrust_.pop();
-  }
+  // // Used for thrust-accel mapping estimation
+  // timed_thrust_.push(std::pair<ros::Time, double>(ros::Time::now(), u.thrust));
+  // while (timed_thrust_.size() > 100)
+  // {
+  //   timed_thrust_.pop();
+  // }
   return debug_msg_;
 }
 

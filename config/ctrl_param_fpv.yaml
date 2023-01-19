@@ -7,7 +7,7 @@ gra         : 9.81
 pose_solver : 1     # 0:From ZhepeiWang (drag & less singular) 1:From ZhepeiWang, 2:From rotor-drag    
 attitude_fb: 1 # 0: from eth rotors controller; 1: from zju fast-perching controller
 ctrl_freq_max   : 100.0
-use_bodyrate_ctrl: false
+use_bodyrate_ctrl: true
 
 max_manual_vel: 1.0
 max_angle: -1  # Attitude angle limit in degree. A negative value means no limit.
@@ -51,16 +51,16 @@ thrust_model: # The model that maps thrust signal u(0~1) to real thrust force F(
 hover:
     use_hov_percent_kf: true
     #hzchzc
-    percent_lower_limit: 0.40
-    percent_higher_limit: 0.77
+    percent_lower_limit: 0.15
+    percent_higher_limit: 0.87
 
 gain:
     # Cascade PID controller. Recommend to read the code.
-    Kp0: 1.2
-    Kp1: 1.2
+    Kp0: 1.6
+    Kp1: 1.6
     Kp2: 1.5
-    Kv0: 1.5
-    Kv1: 1.5
+    Kv0: 1.6
+    Kv1: 1.6
     Kv2: 1.5
     # ↓↓↓ No use now --
     Kvi0: 0.2
@@ -75,8 +75,33 @@ gain:
     Ka2: 1.0
 
     # ↓↓↓ Only used in rate control mode.
-    KAngR: 30.0
-    KAngP: 30.0
+    KAngR: 10.0
+    KAngP: 10.0
+    KAngY: 10.0
+
+track:
+    # Cascade PID controller. Recommend to read the code.
+    Kp0: 1.2
+    Kp1: 1.2
+    Kp2: 1.5
+    Kv0: 1.6
+    Kv1: 1.6
+    Kv2: 1.5
+    # ↓↓↓ No use now --
+    Kvi0: 0.2
+    Kvi1: 0.2
+    Kvi2: 0.2
+    Kvd0: 0.0
+    Kvd1: 0.0
+    Kvd2: 0.0
+
+    Ka0: 1.0
+    Ka1: 1.0
+    Ka2: 1.0
+
+    # ↓↓↓ Only used in rate control mode.
+    KAngR: 10.0
+    KAngP: 10.0
     KAngY: 10.0
     
 

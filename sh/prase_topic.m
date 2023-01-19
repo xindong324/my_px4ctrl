@@ -8,7 +8,7 @@ clc;
 %bag = rosbag('mavros_zed_2021-11-21-13-56-13.bag');
 %bag = rosbag('mavros_2021-12-04-17-16-30.bag');
  %bag = rosbag('mavros_2021-12-13-09-56-14.bag');
- bag = rosbag('2023-01-19-13-26-00.bag');
+ bag = rosbag('2023-01-20-00-03-15.bag');
  
 
 state_select = select(bag, 'Time',[bag.StartTime bag.EndTime], 'Topic', '/mavros/local_position/odom');% {'iiwa_msgs/JointPosition'}
@@ -74,10 +74,12 @@ des_rate = rate_state.Data(:,1:3);
 des_thr = rate_state.Data(:,4);
 
 figure(1)
+
 subplot(3,1,1)
 plot(t,x,'-r','linewidth',2);
 hold on
 plot(traj_t,traj_pos(:,1),'-b','linewidth',2);
+title('pos')
 
 subplot(3,1,2)
 plot(t,y,'-r','linewidth',2);
@@ -91,10 +93,13 @@ hold on
 plot(traj_t,traj_pos(:,3),'-b','linewidth',2);
 
 figure(2)
+
 subplot(3,1,1)
+
 plot(t,vel(:,1),'-r','linewidth',2);
 hold on
 plot(traj_t,traj_vel(:,1),'-b','linewidth',2);
+title('vel')
 
 subplot(3,1,2)
 plot(t,vel(:,2),'-r','linewidth',2);

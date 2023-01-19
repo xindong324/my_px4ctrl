@@ -17,6 +17,7 @@ void HovThrKF::init() {
     ROS_ASSERT_MSG(mass > 0.1 && max_force > 9.8, "mass=%f max_force=%f", mass, max_force);
 
     x = Vector2d(0.0, 0.0);
+
     P = Matrix<double, 2, 2>();
     P << 0.5 * 0.5, 0, 0, 1 * 1;
     Q = Matrix<double, 2, 2>();
@@ -97,9 +98,11 @@ void HovThrKF::simple_update(Eigen::Vector3d des_v, Eigen::Vector3d odom_v) {
     double compensate = (des_v(2) - odom_v(2)) * 0.001;
     x(0) = x(0) + compensate;
 
+
     // std::cout << "des_v=" << des_v.transpose()  << " odom_v=" << odom_v.transpose() <<  std::endl;
 
-    // printf("x(0)=%f\n", x(0));
+    //printf("[HOV THR ]x(0)=%f\n", x(0));
+    printf("[HOV THR]des_v=%f, odom_v=%lf\n", des_v(2),odom_v(2));
 
     myuav_utils::limit_range(x(0), param.hover.percent_lower_limit, param.hover.percent_higher_limit);
     if (x(0) == param.hover.percent_lower_limit) {
