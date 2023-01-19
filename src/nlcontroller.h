@@ -105,7 +105,7 @@ struct Controller_Output_t
 	// Collective mass normalized thrust
 	double thrust;
 
-	//Eigen::Vector3d des_v_real;
+	Eigen::Vector3d des_v_real;
 };
 
 

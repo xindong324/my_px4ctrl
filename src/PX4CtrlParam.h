@@ -106,6 +106,7 @@ public:
     double max_manual_vel;
     double low_voltage;
 
+    double hov_percent;
     double full_thrust;
 
     bool use_bodyrate_ctrl;

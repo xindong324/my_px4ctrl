@@ -21,7 +21,7 @@ Controller::Controller(Parameter_t &param) : param_(param)
 {
   is_configured = false;
 	int_e_v.setZero();
-  resetThrustMapping();
+  //resetThrustMapping();
 }
 
 // void Controller::config()
@@ -173,7 +173,7 @@ Controller::calculateControl(const Desired_State_t &des,
 	    step2 get the pid error
 	    */
 
-     Eigen::Vector3d e_p, e_v, F_des;
+     Eigen::Vector3d e_p, e_v;
      double e_yaw = 0.0;
      // only  used in hovering control
     // if(des.v(0)!=0 || des.v(1)!=0 || des.v(2) != 0){
@@ -191,13 +191,30 @@ Controller::calculateControl(const Desired_State_t &des,
     else{
       pid_error_accelerations = computePIDErrorAccZJU(des,odom,imu);
     }
-    Eigen::Vector3d Ka;
+    Eigen::Vector3d Ka, Kp;
     Eigen::Vector3d des_acc;
     Ka << param_.gain.Ka0, param_.gain.Ka1, param_.gain.Ka2;
+    
+    // cal hov thr 
+    Kp << param_.gain.Kp0, param_.gain.Kp1, param_.gain.Kp2;
+    Eigen::Vector3d u_p = Kp.asDiagonal() * (des.p - odom.p);
+    u.des_v_real = des.v + u_p; // For estimating hover percent
+
     des_acc = Ka.asDiagonal() * des.a + pid_error_accelerations;
     des_acc += Eigen::Vector3d(0,0,param_.gra);
 
-    u.thrust = computeDesiredCollectiveThrustSignal(des_acc);
+    //u.thrust = computeDesiredCollectiveThrustSignal(des_acc);
+    //cal thr
+    Eigen::Matrix3d wRb_odom = odom.q.toRotationMatrix();
+    Eigen::Vector3d z_b_curr = wRb_odom.col(2);
+    Eigen::Vector3d F_des = des_acc*param_.mass;
+    double u1 = F_des.dot(z_b_curr);
+    double fullparam = 0.7;
+    u.thrust = u1 / param_.full_thrust;
+    if(u.thrust>=fullparam)
+      ROS_WARN("FULL THRUST");
+    u.thrust = u.thrust>=fullparam?fullparam:u.thrust;
+    //thr
     
     const Eigen::Quaterniond desired_attitude = computeDesiredAttitude(des_acc, des.yaw,odom.q);
 	  const Eigen::Vector3d feedback_bodyrates = computeFeedBackControlBodyrates(desired_attitude,odom.q);
@@ -248,73 +265,73 @@ Controller::calculateControl(const Desired_State_t &des,
   return debug_msg_;
 }
 
-/*
-  compute throttle percentage 
-*/
-double 
-Controller::computeDesiredCollectiveThrustSignal(
-    const Eigen::Vector3d &des_acc)
-{
-  double throttle_percentage(0.0);
+// /*
+//   compute throttle percentage 
+// */
+// double 
+// Controller::computeDesiredCollectiveThrustSignal(
+//     const Eigen::Vector3d &des_acc)
+// {
+//   double throttle_percentage(0.0);
   
-  /* compute throttle, thr2acc has been estimated before */
-  throttle_percentage = des_acc(2) / thr2acc_;
+//   /* compute throttle, thr2acc has been estimated before */
+//   throttle_percentage = des_acc(2) / thr2acc_;
 
-  return throttle_percentage;
-}
+//   return throttle_percentage;
+// }
 
-bool 
-Controller::estimateThrustModel(
-    const Eigen::Vector3d &est_a,
-    const Parameter_t &param)
-{
-  ros::Time t_now = ros::Time::now();
-  while (timed_thrust_.size() >= 1)
-  {
-    // Choose data before 35~45ms ago
-    std::pair<ros::Time, double> t_t = timed_thrust_.front();
-    double time_passed = (t_now - t_t.first).toSec();
-    if (time_passed > 0.045) // 45ms
-    {
-      // printf("continue, time_passed=%f\n", time_passed);
-      timed_thrust_.pop();
-      continue;
-    }
-    if (time_passed < 0.035) // 35ms
-    {
-      // printf("skip, time_passed=%f\n", time_passed);
-      return false;
-    }
+// bool 
+// Controller::estimateThrustModel(
+//     const Eigen::Vector3d &est_a,
+//     const Parameter_t &param)
+// {
+//   ros::Time t_now = ros::Time::now();
+//   while (timed_thrust_.size() >= 1)
+//   {
+//     // Choose data before 35~45ms ago
+//     std::pair<ros::Time, double> t_t = timed_thrust_.front();
+//     double time_passed = (t_now - t_t.first).toSec();
+//     if (time_passed > 0.045) // 45ms
+//     {
+//       // printf("continue, time_passed=%f\n", time_passed);
+//       timed_thrust_.pop();
+//       continue;
+//     }
+//     if (time_passed < 0.035) // 35ms
+//     {
+//       // printf("skip, time_passed=%f\n", time_passed);
+//       return false;
+//     }
 
-    /***********************************************************/
-    /* Recursive least squares algorithm with vanishing memory */
-    /***********************************************************/
-    double thr = t_t.second;
-    timed_thrust_.pop();
+//     /***********************************************************/
+//     /* Recursive least squares algorithm with vanishing memory */
+//     /***********************************************************/
+//     double thr = t_t.second;
+//     timed_thrust_.pop();
     
-    /***********************************/
-    /* Model: est_a(2) = thr1acc_ * thr */
-    /***********************************/
+//     /***********************************/
+//     /* Model: est_a(2) = thr1acc_ * thr */
+//     /***********************************/
 
-    double gamma = 1 / (rho2_ + thr * P_ * thr);
-    double K = gamma * P_ * thr;
-    thr2acc_ = thr2acc_ + K * (est_a(2) - thr * thr2acc_);
-    P_ = (1 - K * thr) * P_ / rho2_;
+//     double gamma = 1 / (rho2_ + thr * P_ * thr);
+//     double K = gamma * P_ * thr;
+//     thr2acc_ = thr2acc_ + K * (est_a(2) - thr * thr2acc_);
+//     P_ = (1 - K * thr) * P_ / rho2_;
     
-    //fflush(stdout);
+//     //fflush(stdout);
 
-    // debug_msg_.thr2acc = thr2acc_;
-    return true;
-  }
-  return false;
-}
+//     // debug_msg_.thr2acc = thr2acc_;
+//     return true;
+//   }
+//   return false;
+// }
 
-void 
-Controller::resetThrustMapping(void)
-{
-  thr2acc_ = param_.gra / param_.thr_map.hover_percentage;
-  P_ = 1e6;
-}
+// void 
+// Controller::resetThrustMapping(void)
+// {
+//   thr2acc_ = param_.gra / param_.thr_map.hover_percentage;
+//   P_ = 1e6;
+// }
 
 Eigen::Vector3d Controller::computePIDErrorAcc(
     const Desired_State_t &des,
@@ -328,7 +345,6 @@ Eigen::Vector3d Controller::computePIDErrorAcc(
   Kv << param_.gain.Kv0, param_.gain.Kv1, param_.gain.Kv2;
   acc_err = Kv.asDiagonal() * (des.v - odom.v) + Kp.asDiagonal() * (des.p - odom.p);
 
-  
   return acc_err;
 }
 

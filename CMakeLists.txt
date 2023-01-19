@@ -54,6 +54,7 @@ add_executable(offbctrl_node
   src/PX4CtrlParam.cpp
   src/nlcontroller.cpp
   src/input.cpp
+  src/hovthrkf.cpp
 )
 
 add_dependencies(offbctrl_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})

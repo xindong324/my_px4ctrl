@@ -21,7 +21,17 @@ int main(int argc, char *argv[])
 
     // Controller controller(param);
     Controller controller(param);
-    OffbCtrlFSM fsm(param, controller);
+    HovThrKF hov_thr_kf(param);
+    OffbCtrlFSM fsm(param, controller,hov_thr_kf);
+
+    fsm.hov_thr_kf_.init();
+    fsm.hov_thr_kf_.set_hov_thr(param.thr_map.hover_percentage);//x(0) = hov_percent
+    
+    ROS_INFO("Initial value for hov_thr set to %.2f/%.2f",
+             fsm.hov_thr_kf_.get_hov_thr(),
+             param.mass * param.gra / param.full_thrust);
+    ROS_INFO("Hovering thrust kalman filter is %s.",
+             param.hover.use_hov_percent_kf ? "used" : "NOT used");
 
     ros::Subscriber state_sub =
         nh.subscribe<mavros_msgs::State>("/mavros/state",

@@ -89,17 +89,17 @@ if __name__ == '__main__':
         # traj.position.y = 0.8 *math.sin(t)
         # traj.velocity.y = 0.8 *math.cos(t)
         # traj.acceleration.y = -0.8*math.sin(t)
-        traj.position.z = 0.5 * math.sin(0.1*t) + 3
+        traj.position.z = 0.5 * math.sin(0.1*t) + 2
         traj.velocity.z = 0.05 * math.cos(0.1*t)
         traj.acceleration.z = -0.005 * math.sin(0.1*t)
 
-        traj.position.x =  1 * math.sin(3*t) 
-        traj.velocity.x =  3 * math.cos(3*t)
-        traj.acceleration.x = -9 * math.sin(3*t)
+        traj.position.x =  2 * math.sin(2*t) 
+        traj.velocity.x =  4 * math.cos(2*t)
+        traj.acceleration.x = -8 * math.sin(2*t)
 
-        traj.position.y = 1 * math.cos(3*t)
-        traj.velocity.y = -3 * math.sin(3*t)
-        traj.acceleration.y = -9 * math.cos(3*t)
+        traj.position.y = 2 * math.cos(2*t)
+        traj.velocity.y = -4 * math.sin(2*t)
+        traj.acceleration.y = -8 * math.cos(2*t)
 
         dx = 0.8*math.sin(2*0.1*(t+1)) - 0.8*math.sin(2*0.1*t)
         dy =  0.8*math.sin(0.1*(t+1)) -  0.8*math.sin(0.1*t)

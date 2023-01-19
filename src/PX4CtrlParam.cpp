@@ -126,5 +126,5 @@ void Parameter_t::init()
 
 void Parameter_t::config_full_thrust(double hov)
 {
-	//full_thrust = hover.use_hov_percent_kf ? (mass * gra / hov) : full_thrust;
+	full_thrust = hover.use_hov_percent_kf ? (mass * gra / hov) : full_thrust;
 };

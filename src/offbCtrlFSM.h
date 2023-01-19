@@ -12,6 +12,7 @@
 
 #include "input.h"
 #include "nlcontroller.h"
+#include "hovthrkf.h"
 
 struct AutoTakeoffLand_t
 {
@@ -30,6 +31,7 @@ private:
     /* data */
 public:
     Parameter_t &param_;
+    HovThrKF& hov_thr_kf_;
     RC_Data_t rc_data_;
     State_Data_t state_data_;
     ExtendedState_Data_t extended_state_data_;
@@ -64,7 +66,7 @@ public:
         EMERGENCY_STOP
     };
 
-    OffbCtrlFSM(Parameter_t &, Controller &);
+    OffbCtrlFSM(Parameter_t &, Controller &, HovThrKF &);
     // ~PX4CtrlFSM();
 
     void process();

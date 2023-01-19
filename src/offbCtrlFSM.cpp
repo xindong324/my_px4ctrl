@@ -5,7 +5,8 @@
 using namespace std;
 using namespace myuav_utils;
 
-OffbCtrlFSM::OffbCtrlFSM(Parameter_t &param, Controller &controller): param_(param), controller_(controller)
+OffbCtrlFSM::OffbCtrlFSM(Parameter_t &param, Controller &controller, HovThrKF &hov_thr_kf): 
+    param_(param), controller_(controller), hov_thr_kf_(hov_thr_kf)
 {
     state_ = INIT;
     hover_pose_.setZero();
@@ -58,7 +59,7 @@ void OffbCtrlFSM::process()
     {    /* code */
         /********************** check state change **************************/
         
-        controller_.resetThrustMapping();
+        // controller_.resetThrustMapping();
         if(param_.takeoff_land.enable && keyboard_data_.trigger_)
         {// if takeoff command triggered // Try to jump to AUTO_TAKEOFF
             if(!odom_is_received(now_time))
@@ -83,7 +84,7 @@ void OffbCtrlFSM::process()
             }
             
             state_ = AUTO_TAKEOFF;
-            controller_.resetThrustMapping();
+            //controller_.resetThrustMapping();
             set_start_pose_for_takeoff_land(odom_data_);
             toggle_offboard_mode(true); // change to offboard before arm
             // wait for 0.1 sec
@@ -123,7 +124,7 @@ void OffbCtrlFSM::process()
         }
         else{
             //normal hover mission
-            set_hov_with_rc();
+            //set_hov_with_rc();
             des = get_hover_des();
 
             if(rc_data_.enter_command_mode || 
@@ -228,7 +229,11 @@ void OffbCtrlFSM::process()
     //step2: estimate thrust model
     if(state_ == AUTO_HOVER || state_ == CMD_CTRL)
     {
-        controller_.estimateThrustModel(imu_data_.a, param_);
+        //ROS_INFO("BF_simple update");
+        hov_thr_kf_.simple_update(u.des_v_real, odom_data_.v );
+        //ROS_INFO("aft_simple update");
+        // This line may not take effect according to param.hov.use_hov_percent_kf
+        param_.config_full_thrust(hov_thr_kf_.get_hov_thr());
     }
 
     
@@ -259,7 +264,7 @@ void OffbCtrlFSM::process()
     else{
         publish_attitude_ctrl(u, now_time);
     }
-
+    
     //step5: Detect if the drone has landed
     land_detector(state_, des, odom_data_);
 

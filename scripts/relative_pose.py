@@ -47,4 +47,4 @@ if __name__ == "__main__":
     # may stay out
     rospy.init_node("offb_nodepy", anonymous=True)
     self.local_position_sub_ = rospy.Subscriber("/mavros/local_position/pose",PoseStamped, callback=self.positionCallback, queue_size=1)
-                            ``````
+                            

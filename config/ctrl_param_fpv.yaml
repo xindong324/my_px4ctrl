@@ -49,19 +49,19 @@ thrust_model: # The model that maps thrust signal u(0~1) to real thrust force F(
     hover_percentage: 0.3  # Thrust percentage in Stabilize/Arco mode # *
 
 hover:
-    use_hov_percent_kf: false
+    use_hov_percent_kf: true
     #hzchzc
     percent_lower_limit: 0.40
     percent_higher_limit: 0.77
 
 gain:
     # Cascade PID controller. Recommend to read the code.
-    Kp0: 1.5
-    Kp1: 1.6
+    Kp0: 1.2
+    Kp1: 1.2
     Kp2: 1.5
-    Kv0: 5.5
-    Kv1: 5.5
-    Kv2: 2.5
+    Kv0: 1.5
+    Kv1: 1.5
+    Kv2: 1.5
     # ↓↓↓ No use now --
     Kvi0: 0.2
     Kvi1: 0.2
